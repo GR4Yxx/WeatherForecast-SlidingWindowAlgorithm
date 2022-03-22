@@ -1,3 +1,5 @@
+#This file handles the main algorithm that reads records and processes its
+
 from openpyxl import load_workbook
 from scipy import spatial
 CD=[]

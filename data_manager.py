@@ -1,3 +1,5 @@
+#This file is resposible for getting data from firebase and storing it into an excel sheet for the algorithm
+
 import pyrebase
 import time
 from openpyxl import Workbook
