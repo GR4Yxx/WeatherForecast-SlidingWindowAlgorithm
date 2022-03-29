@@ -1,11 +1,21 @@
 #This file handles the main algorithm that reads records and processes its
 
+from array import *
 from openpyxl import load_workbook
 from scipy import spatial
+from numpy import minimum,array_equal
 CD=[]
 PD=[]
 tempWindow=[]
 slidingW=[]
+euclideanD=[]
+
+minWindow=0
+k=0
+n=8
+
+
+
 window_size=7
 past_window_size=14
 rowCounter=2
@@ -13,6 +23,22 @@ maxRowCounter=0
 readings=8
 wb=load_workbook('data.xlsx')
 ws=wb.active
+
+def calcED():
+    global euclideanD,minWindow
+
+    for x in range(8):
+        Y =spatial.distance.cdist(CD, slidingW[x], 'euclidean')
+        euclideanD.append(Y)
+    for i in range(8):
+        euclideanD[i]=euclideanD[i].tolist()
+
+    minx=minimum(euclideanD[0],euclideanD[1])
+    for y in range(2,8):
+        minx=minimum(minx,euclideanD[y])
+    for z in range(8):
+        if array_equal(euclideanD[z],minx):
+            minWindow=z    
 
 def printTable(x,S):
     print(S)
@@ -23,8 +49,6 @@ def printWindows(windows):
     print(f'Windows :{len(windows)}')
     for x in range(readings):
         printTable(windows[x],f'Window {x+1}')
-
-
 
 def init():
     global PD,CD,rowCounter,tempWindow,slidingW
@@ -39,13 +63,31 @@ def init():
         slidingW.append(tempWindow)
         rowCounter+=1
         tempWindow=[]
+    
+    
+
 
 
 #Main Function
 init()
-printTable(PD,'Past Data')
+#Step 1
 printTable(CD,'Current Data')
+
+#Step 2
+printTable(PD,'Past Data')
+
+#Step 3
 printWindows(slidingW)
 
-Y =spatial.distance.cdist(CD, slidingW[1], 'euclidean')
-print("Euclidean Distance :",Y)
+#Step 4
+calcED()
+minWindow=1
+print(f'Least window is {minWindow}')
+
+#Step 5
+
+
+
+
+#Calculating euclidean distance
+# calcED(1)
